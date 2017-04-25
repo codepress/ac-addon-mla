@@ -21,10 +21,16 @@ class AC_Addon_MLA {
 			return;
 		}
 
+		// Listscreen
 		add_action( 'ac/list_screens', array( $this, 'register_list_screen' ) );
-		add_filter( 'acp/editing/model', array( $this, 'add_editing_strategy' ) );
+
+		// Columns
 		add_action( 'ac/column_types', array( $this, 'remove_column_types' ) );
 		add_action( 'acp/column_types', array( $this, 'remove_column_types' ) );
+		add_action( 'acp/column_types', array( $this, 'register_column_types' ) );
+
+		// Editing
+		add_filter( 'acp/editing/model', array( $this, 'add_editing_strategy' ) );
 	}
 
 	/**
@@ -57,17 +63,28 @@ class AC_Addon_MLA {
 	 */
 	public function remove_column_types( $listscreen ) {
 		if ( $listscreen instanceof AC_Addon_MLA_ListScreen ) {
-
-			$exclude = array(
-				'column-description',
-				'column-caption',
-				'column-mime_type',
-			);
-
-			foreach ( $exclude as $column_type ) {
-				$listscreen->deregister_column_type( $column_type );
-			}
+			return;
 		}
+
+		$exclude = array(
+			'column-description',
+			'column-caption',
+			'column-mime_type',
+		);
+
+		foreach ( $exclude as $column_type ) {
+			$listscreen->deregister_column_type( $column_type );
+		}
+	}
+
+	public function register_column_types( $listscreen ) {
+		if ( ! $listscreen instanceof AC_Addon_MLA_ListScreen ) {
+			return;
+		}
+
+		require_once plugin_dir_path( __FILE__ ) . 'column/menu_order.php';
+
+		$listscreen->register_column_type( new ACA_MLA_Column_MenuOrder() );
 	}
 
 }

@@ -17,20 +17,11 @@ class AC_Addon_MLA_ListScreen extends AC_ListScreen_Media {
 		$this->set_list_table_class( 'MLA_List_Table' );
 	}
 
+	/**
+	 * Trigger callback that renders the column's value
+	 */
 	public function set_manage_value_callback() {
 		add_filter( 'mla_list_table_column_default', array( $this, 'column_default_value' ), 100, 3 );
-	}
-
-	/**
-	 * @return array
-	 */
-	public function get_column_headers() {
-		if ( ! class_exists( 'MLAQuery' ) ) {
-			require_once( MLA_PLUGIN_PATH . 'includes/class-mla-data-query.php' );
-			MLAQuery::initialize();
-		}
-
-		return apply_filters( 'mla_list_table_get_columns', MLAQuery::$default_columns );
 	}
 
 	/**
@@ -61,6 +52,10 @@ class AC_Addon_MLA_ListScreen extends AC_ListScreen_Media {
 		}
 
 		return new $class;
+	}
+
+	public function is_current_screen( $wp_screen ) {
+		return $wp_screen && $wp_screen->id === $this->get_screen_id();
 	}
 
 }
