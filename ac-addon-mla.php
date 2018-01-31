@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: 		Admin Columns - Media Library Assistant add-on
+Plugin Name: 		Admin Columns - Media Library Assistant
 Version: 			1.0
 Description: 		Compatibility add-on for Media Library Assistant
 Author: 			Codepress
@@ -10,10 +10,12 @@ Text Domain: 		codepress-admin-columns
 
 defined( 'ABSPATH' ) or die();
 
+define( 'ADDON_MLA_FILE', __FILE__ );
+
 class AC_Addon_MLA {
 
 	public function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'init' ) );
+		add_action( 'after_setup_theme', array( $this, 'init' ) );
 	}
 
 	public function init() {
@@ -23,68 +25,86 @@ class AC_Addon_MLA {
 
 		// Listscreen
 		add_action( 'ac/list_screens', array( $this, 'register_list_screen' ) );
+		add_action( 'acp/list_screens', array( $this, 'register_list_screen_pro' ) );
 
 		// Columns
-		add_action( 'ac/column_types', array( $this, 'remove_column_types' ) );
-		add_action( 'acp/column_types', array( $this, 'remove_column_types' ) );
-		add_action( 'acp/column_types', array( $this, 'register_column_types' ) );
+		add_filter( 'ac/column/custom_field/meta_keys', array( $this, 'remove_custom_columns' ) );
 
-		// Editing
-		add_filter( 'acp/editing/model', array( $this, 'add_editing_strategy' ) );
+		// Export
+		add_action( 'ac/table/list_screen', array( $this, 'export_table_global' ) );
 	}
 
-	/**
-	 * Editing strategy for MLA
-	 *
-	 * @param ACP_Editing_Model $model
-	 */
-	public function add_editing_strategy( $model ) {
-		if ( $model->get_column()->get_list_screen() instanceof AC_Addon_MLA_ListScreen ) {
-
-			require_once plugin_dir_path( __FILE__ ) . 'editing-strategy.php';
-
-			$model->set_strategy( new AC_Addon_MLA_Editing_Strategy( $model ) );
-		}
-
-		return $model;
+	public static function get_plugin_dir() {
+		return plugin_dir_path( __FILE__ ) . 'includes/';
 	}
 
 	/**
 	 * MLA list screen
 	 */
 	public function register_list_screen() {
-		require_once plugin_dir_path( __FILE__ ) . 'listscreen.php';
+		require_once $this->get_plugin_dir() . 'class-listscreen.php';
 
 		AC()->register_list_screen( new AC_Addon_MLA_ListScreen );
 	}
 
 	/**
-	 * @param AC_ListScreen $listscreen
+	 * MLA list screen
 	 */
-	public function remove_column_types( $listscreen ) {
-		if ( $listscreen instanceof AC_Addon_MLA_ListScreen ) {
-			return;
-		}
+	public function register_list_screen_pro() {
+		require_once $this->get_plugin_dir() . 'class-listscreen.php';
+		require_once $this->get_plugin_dir() . 'class-listscreen-pro.php';
 
-		$exclude = array(
-			'column-description',
-			'column-caption',
-			'column-mime_type',
-		);
-
-		foreach ( $exclude as $column_type ) {
-			$listscreen->deregister_column_type( $column_type );
-		}
+		AC()->register_list_screen( new AC_Addon_MLA_ListScreen_Pro );
 	}
 
-	public function register_column_types( $listscreen ) {
-		if ( ! $listscreen instanceof AC_Addon_MLA_ListScreen ) {
+	/**
+	 * Remove duplicate columns from the Admin Columns "Custom" section
+	 *
+	 * @since 2.52
+	 *
+	 * @param array $keys Distinct meta keys from DB
+	 */
+	public static function remove_custom_columns( $keys ) {
+		// Find the fields already present in the submenu table
+		$mla_columns = apply_filters( 'mla_list_table_get_columns', MLAQuery::$default_columns );
+		$mla_custom = array();
+		foreach ( $mla_columns as $slug => $heading ) {
+			if ( 'c_' === substr( $slug, 0, 2 ) ) {
+				$mla_custom[] = $heading;
+			}
+		}
+
+		// Remove the fields already present in the submenu table
+		foreach ( $keys as $index => $value ) {
+			if ( in_array( esc_html( $value ), $mla_custom ) ) {
+				unset( $keys[ $index ] );
+			}
+		}
+
+		return $keys;
+	}
+
+	/**
+	 * Currently the MLA_List_Table prepare query is loaded after the <head>.
+	 *
+	 * When exporting the same page is being requested by an ajax request and triggers the filter 'the_posts'.
+	 * The callback for this filter will print a json string. This needs to be done before any rendering of the page.
+	 *
+	 *  Also, export needs the $GLOBALS['wp_list_table'] to be populated for displaying the export button.
+	 *
+	 * @param AC_ListScreen $list_screen
+	 */
+	public function export_table_global( AC_ListScreen $list_screen ) {
+		if ( ! $list_screen instanceof AC_Addon_MLA_ListScreen_Pro ) {
 			return;
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'column/menu_order.php';
+		global $wp_list_table;
 
-		$listscreen->register_column_type( new ACA_MLA_Column_MenuOrder() );
+		require_once( MLA_PLUGIN_PATH . 'includes/class-mla-list-table.php' );
+
+		$wp_list_table = new MLA_List_Table();
+		$wp_list_table->prepare_items();
 	}
 
 }
