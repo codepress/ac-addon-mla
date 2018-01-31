@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: 		Admin Columns - Media Library Assistant
-Version: 			1.0
+Version: 			1.1
 Description: 		Compatibility add-on for Media Library Assistant
 Author: 			Codepress
 Author URI: 		https://admincolumns.com
@@ -42,7 +42,7 @@ class AC_Addon_MLA {
 	 * MLA list screen
 	 */
 	public function register_list_screen() {
-		require_once $this->get_plugin_dir() . 'class-listscreen.php';
+		require_once self::get_plugin_dir() . 'class-listscreen.php';
 
 		AC()->register_list_screen( new AC_Addon_MLA_ListScreen );
 	}
@@ -51,8 +51,8 @@ class AC_Addon_MLA {
 	 * MLA list screen
 	 */
 	public function register_list_screen_pro() {
-		require_once $this->get_plugin_dir() . 'class-listscreen.php';
-		require_once $this->get_plugin_dir() . 'class-listscreen-pro.php';
+		require_once self::get_plugin_dir() . 'class-listscreen.php';
+		require_once self::get_plugin_dir() . 'class-listscreen-pro.php';
 
 		AC()->register_list_screen( new AC_Addon_MLA_ListScreen_Pro );
 	}

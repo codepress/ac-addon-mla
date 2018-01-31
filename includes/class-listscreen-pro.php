@@ -14,7 +14,6 @@ class AC_Addon_MLA_ListScreen_Pro extends AC_Addon_MLA_ListScreen
 	public function export() {
 		require_once( AC_Addon_MLA::get_plugin_dir() . 'class-export-strategy.php' );
 
-		// TODO
 		return new AC_Addon_MLA_Export_Strategy( $this );
 	}
 
