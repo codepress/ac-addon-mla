@@ -25,7 +25,6 @@ class AC_Addon_MLA {
 
 		// Listscreen
 		add_action( 'ac/list_screens', array( $this, 'register_list_screen' ) );
-		add_action( 'acp/list_screens', array( $this, 'register_list_screen_pro' ) );
 
 		// Columns
 		add_filter( 'ac/column/custom_field/meta_keys', array( $this, 'remove_custom_columns' ) );
@@ -44,17 +43,14 @@ class AC_Addon_MLA {
 	public function register_list_screen() {
 		require_once self::get_plugin_dir() . 'class-listscreen.php';
 
-		AC()->register_list_screen( new AC_Addon_MLA_ListScreen );
-	}
+		if ( function_exists( 'ACP' ) ) {
+			require_once self::get_plugin_dir() . 'class-listscreen-pro.php';
 
-	/**
-	 * MLA list screen
-	 */
-	public function register_list_screen_pro() {
-		require_once self::get_plugin_dir() . 'class-listscreen.php';
-		require_once self::get_plugin_dir() . 'class-listscreen-pro.php';
-
-		AC()->register_list_screen( new AC_Addon_MLA_ListScreen_Pro );
+			AC()->register_list_screen( new AC_Addon_MLA_ListScreen_Pro );
+		}
+		else {
+			AC()->register_list_screen( new AC_Addon_MLA_ListScreen );
+		}
 	}
 
 	/**

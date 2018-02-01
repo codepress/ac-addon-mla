@@ -20,6 +20,9 @@ class AC_Addon_MLA_ListScreen_Pro extends AC_Addon_MLA_ListScreen
 	public function register_column_types() {
 		parent::register_column_types();
 
+		$this->register_column_type( new ACP_Column_CustomField );
+		$this->register_column_type( new ACP_Column_Menu );
+
 		$columns = array(
 			'alt-text.php'   => 'ACP_Addon_MLA_ColumnPro_AltText',
 			'caption.php'    => 'ACP_Addon_MLA_ColumnPro_Caption',

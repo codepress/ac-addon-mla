@@ -53,7 +53,7 @@ class AC_Addon_MLA_ListScreen extends AC_ListScreen_Media {
 		return $wp_screen && $wp_screen->id === $this->get_screen_id();
 	}
 
-	private function remove_columns() {
+	protected function remove_columns() {
 		$columns = array(
 			'comments',
 			'title',
