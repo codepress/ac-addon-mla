@@ -1,6 +1,6 @@
 <?php
 
-class ACP_Addon_MLA_ColumnPro_MenuOrder extends ACP_Column_Post_Order {
+class ACP_Addon_MLA_ColumnPro_MenuOrder extends ACP\Column\Post\Order {
 
 	public function __construct() {
 		$this->set_original( true );

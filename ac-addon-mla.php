@@ -88,9 +88,9 @@ class AC_Addon_MLA {
 	 *
 	 *  Also, export needs the $GLOBALS['wp_list_table'] to be populated for displaying the export button.
 	 *
-	 * @param AC_ListScreen $list_screen
+	 * @param AC\ListScreen $list_screen
 	 */
-	public function export_table_global( AC_ListScreen $list_screen ) {
+	public function export_table_global( AC\ListScreen $list_screen ) {
 		if ( ! $list_screen instanceof AC_Addon_MLA_ListScreen_Pro ) {
 			return;
 		}

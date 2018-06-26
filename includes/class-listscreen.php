@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) or die();
 
-class AC_Addon_MLA_ListScreen extends AC_ListScreen_Media {
+class AC_Addon_MLA_ListScreen extends AC\ListScreen\Media {
 
 	public function __construct() {
 		parent::__construct();

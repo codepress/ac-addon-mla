@@ -1,6 +1,6 @@
 <?php
 
-class ACP_Addon_MLA_Editing_Model_Media_Title extends ACP_Editing_Model_Media_Title {
+class ACP_Addon_MLA_Editing_Model_Media_Title extends ACP\Editing\Model\Media\Title {
 
 	/**
 	 * Remove JavaScript selector settings

@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) or die();
 
 class AC_Addon_MLA_ListScreen_Pro extends AC_Addon_MLA_ListScreen
-	implements ACP_Editing_ListScreen, ACP_Export_ListScreen {
+	implements \ACP\Editing\ListScreen, ACP\Export\ListScreen {
 
 	public function editing( $model ) {
 		require_once( AC_Addon_MLA::get_plugin_dir() . 'class-editing-strategy.php' );
@@ -20,8 +20,8 @@ class AC_Addon_MLA_ListScreen_Pro extends AC_Addon_MLA_ListScreen
 	public function register_column_types() {
 		parent::register_column_types();
 
-		$this->register_column_type( new ACP_Column_CustomField );
-		$this->register_column_type( new ACP_Column_Menu );
+		$this->register_column_type( new ACP\Column\CustomField );
+		$this->register_column_type( new ACP\Column\Menu );
 
 		$columns = array(
 			'alt-text.php'   => 'ACP_Addon_MLA_ColumnPro_AltText',

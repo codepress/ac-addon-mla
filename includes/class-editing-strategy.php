@@ -1,6 +1,6 @@
 <?php
 
-class AC_Addon_MLA_Editing_Strategy extends ACP_Editing_Strategy_Post {
+class AC_Addon_MLA_Editing_Strategy extends ACP\Editing\Strategy\Post {
 
 	/**
 	 * @return int[]

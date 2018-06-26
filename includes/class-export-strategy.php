@@ -1,6 +1,6 @@
 <?php
 
-class AC_Addon_MLA_Export_Strategy extends ACP_Export_Strategy_Post {
+class AC_Addon_MLA_Export_Strategy extends ACP\Export\Strategy\Post {
 
 	public function modify_posts_query( $query ) {
 		$per_page = $this->get_num_items_per_iteration();

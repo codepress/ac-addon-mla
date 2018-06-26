@@ -1,6 +1,6 @@
 <?php
 
-class ACP_Addon_MLA_ColumnPro_AltText extends ACP_Column_Media_AlternateText {
+class ACP_Addon_MLA_ColumnPro_AltText extends ACP\Column\Media\AlternateText {
 
 	public function __construct() {
 		$this->set_original( true );
